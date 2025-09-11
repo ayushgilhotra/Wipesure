@@ -246,12 +246,28 @@ class WipeSureApp {
         
         if (files.length > 0) {
             const fileList = Array.from(files).map(file => file.name).join(', ');
-            fileUpload.innerHTML = `
+            
+            // Create a status display without removing the file input
+            let statusDiv = fileUpload.querySelector('.file-status');
+            if (!statusDiv) {
+                statusDiv = document.createElement('div');
+                statusDiv.className = 'file-status';
+                fileUpload.appendChild(statusDiv);
+            }
+            
+            statusDiv.innerHTML = `
                 <i class="fas fa-check-circle"></i>
                 <p>Selected: ${fileList}</p>
                 <p class="file-count">${files.length} file(s) selected</p>
             `;
+            
             fileUpload.style.borderColor = 'var(--primary-color)';
+            
+            // Hide the original content but keep the input
+            const originalContent = fileUpload.querySelector('p');
+            const originalIcon = fileUpload.querySelector('i');
+            if (originalContent) originalContent.style.display = 'none';
+            if (originalIcon) originalIcon.style.display = 'none';
         }
     }
 
@@ -267,7 +283,11 @@ class WipeSureApp {
 
         if (wipeType === 'file') {
             const fileInput = document.getElementById('file-input');
-            if (fileInput.files.length === 0) {
+            if (!fileInput) {
+                alert('File input not found. Please refresh the page and try again.');
+                return;
+            }
+            if (!fileInput.files || fileInput.files.length === 0) {
                 alert('Please select a file to wipe.');
                 return;
             }

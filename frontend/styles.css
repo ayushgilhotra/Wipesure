@@ -402,6 +402,7 @@ label {
     cursor: pointer;
     transition: all 0.3s ease;
     margin: 1rem 0;
+    position: relative;
 }
 
 .file-upload-area:hover {
@@ -417,6 +418,30 @@ label {
 
 .file-upload-area input[type="file"] {
     display: none;
+}
+
+.file-status {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+}
+
+.file-status i {
+    color: var(--primary-color);
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.file-status p {
+    color: var(--text-primary);
+    margin: 0.25rem 0;
+}
+
+.file-count {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
 }
 
 /* Radio Options */
