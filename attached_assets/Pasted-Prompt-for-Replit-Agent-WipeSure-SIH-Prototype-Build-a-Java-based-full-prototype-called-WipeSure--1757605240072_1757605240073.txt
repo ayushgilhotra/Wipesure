@@ -1,0 +1,142 @@
+Prompt for Replit Agent: WipeSure SIH Prototype
+
+Build a Java-based full prototype called “WipeSure Enterprise Dashboard” for the SIH jury.
+The system should include frontend (HTML/CSS/JS), backend (Spring Boot), database (MySQL), AI residue microservice (Python), and tamper-proof certificate generation (iText).
+
+🔹 Core Requirements
+
+Frontend (UI)
+
+Use HTML, CSS, and JavaScript (no React, no Flutter).
+
+Pages required:
+
+Dashboard → overview of devices, wipes, certificates issued.
+
+Data Wipe → select files or full device wipe. Show live progress bars (multi-pass wipe simulation).
+
+Data Backup → ask for user email, simulate backup, show success.
+
+Data Transfer → connect/simulate a second device and transfer files.
+
+AI Residue Scan → futuristic radar-style visualization with results from Python service.
+
+Certificates → list + download auto-generated PDFs (tamper-proof, blockchain-style logs).
+
+Security & Compliance → include NIST SP 800-88 + security text.
+
+Multi-Device Management → show multiple devices wiping at once.
+
+Settings → wipe method selection, AI toggle, cloud API keys.
+
+Theme: futuristic cyber-security look, dark mode, glowing UI elements.
+
+Backend (Spring Boot, Java)
+
+Use Spring Boot to handle backend logic.
+
+Expose REST APIs:
+
+POST /wipe → start a file/device wipe job.
+
+GET /wipe/{id} → job progress.
+
+POST /backup → backup to email/cloud (simulate).
+
+POST /transfer → transfer files between devices.
+
+POST /ai/scan → call Python microservice for residue analysis.
+
+POST /certificate/{jobId} → generate tamper-proof PDF with iText.
+
+GET /certificates → list + download.
+
+Store everything in MySQL: devices, wipe jobs, AI results, certificates, blockchain-style logs.
+
+Implement actual file deletion for file wipe option (safe overwrite simulation).
+
+Generate PDF certificates with iText including:
+
+Device ID & health info (for resale).
+
+Wipe method + passes.
+
+AI entropy score.
+
+Timestamp.
+
+Blockchain-like audit hash.
+
+AI Residue Scan (Python microservice)
+
+Use Flask or FastAPI.
+
+Input: job/device ID.
+
+Output JSON: {entropy_score, recoverable_files, residue_status}.
+
+Example: { "entropy_score": 99.8, "recoverable_files": 0, "residue_status": "CLEAN" }.
+
+Called by Spring Boot → results displayed in frontend.
+
+Database (MySQL)
+
+Tables:
+
+devices(id, name, model, storage, health)
+
+wipe_jobs(id, device_id, method, passes, status, progress, timestamp)
+
+ai_results(id, job_id, entropy_score, residue_status)
+
+certificates(id, job_id, hash, pdf_path, created_at)
+
+blockchain_logs(id, ref_id, hash, immutable_flag)
+
+Security & Compliance Page (from project deck)
+
+Show exact compliance text:
+
+“Follows NIST SP 800-88 guidelines.”
+
+“AI scan analyzes storage to detect leftover recoverable data, ensuring complete wipe.”
+
+“Generates a certificate with device health details (SSD life, RAM) to support resale and recycling.”
+
+Tagline: “WipeSure — Proof, Not Promises.”
+
+🔹 Deliverables
+
+Full project repo with:
+
+/frontend (HTML/CSS/JS)
+
+/backend (Spring Boot project with iText + MySQL integration)
+
+/ai-service (Python FastAPI/Flask microservice)
+
+SQL schema + migrations.
+
+Sample data + demo-ready scripts.
+
+One sample generated certificate PDF.
+
+README with clear instructions to run locally (Spring Boot + Python service + MySQL).
+
+(Optional) Docker Compose to run everything together.
+
+🔹 Goal for SIH Jury
+
+Deliver a working prototype that demonstrates:
+
+Select → Backup/Transfer → Wipe → AI Residue Scan → Certificate → Cloud Upload.
+
+Real deletions (file wipe).
+
+Tamper-proof PDF certificates.
+
+AI analysis results.
+
+Enterprise-grade dashboard.
+
+Futuristic branding (logo, theme, animations).
