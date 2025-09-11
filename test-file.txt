@@ -1,4 +1,0 @@
-This is a test file for secure deletion demonstration.
-It contains sensitive data that needs to be completely wiped.
-WipeSure will perform multi-pass overwrite following industry standards.
-File size: approximately 200 bytes for testing purposes.
