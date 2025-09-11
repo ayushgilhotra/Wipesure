@@ -7,6 +7,7 @@ class WipeSureApp {
         this.wipeJobs = [];
         this.certificates = [];
         this.radarAnimation = null;
+        this.wipeCompleted = false;
         
         this.initializeApp();
     }
@@ -310,6 +311,7 @@ class WipeSureApp {
 
             const result = await response.json();
             this.currentWipeJob = result.jobId;
+            this.wipeCompleted = false; // Reset completion flag for new job
             this.showWipeProgress();
             this.monitorWipeProgress();
         } catch (error) {
@@ -350,9 +352,10 @@ class WipeSureApp {
                 const calculatedPass = Math.min(Math.ceil((job.progress / 100) * passes), passes);
                 currentPass.textContent = calculatedPass;
 
-                if (job.status === 'completed') {
+                if (job.status === 'completed' && !this.wipeCompleted) {
                     clearInterval(interval);
                     wipeStatus.textContent = 'COMPLETED';
+                    this.wipeCompleted = true;
                     this.showWipeCompletion();
                 }
             } catch (error) {
@@ -364,6 +367,12 @@ class WipeSureApp {
 
     showWipeCompletion() {
         const progressContainer = document.getElementById('wipe-progress');
+        
+        // Check if completion message already exists to prevent duplicates
+        if (progressContainer.querySelector('.completion-message')) {
+            return; // Already shown, don't add again
+        }
+        
         const completionMessage = document.createElement('div');
         completionMessage.className = 'completion-message';
         completionMessage.innerHTML = `
