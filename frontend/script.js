@@ -408,11 +408,59 @@ class WipeSureApp {
                 link.click();
                 
                 alert('Certificate generated and downloaded successfully!');
+                
+                // Reset the file upload area and clear selection
+                this.resetFileUploadArea();
+                this.currentWipeJob = null;
+                this.wipeCompleted = false;
             }
         } catch (error) {
             console.error('Error generating certificate:', error);
             alert('Failed to generate certificate. Please try again.');
         }
+    }
+
+    resetFileUploadArea() {
+        // Clear file input
+        const fileInput = document.getElementById('file-input');
+        if (fileInput) {
+            fileInput.value = '';
+        }
+        
+        // Reset file upload area UI
+        const fileUpload = document.getElementById('file-upload');
+        if (fileUpload) {
+            // Remove file status if it exists
+            const fileStatus = fileUpload.querySelector('.file-status');
+            if (fileStatus) {
+                fileStatus.remove();
+            }
+            
+            // Show original content
+            const originalContent = fileUpload.querySelector('p');
+            const originalIcon = fileUpload.querySelector('i');
+            if (originalContent) originalContent.style.display = 'block';
+            if (originalIcon) originalIcon.style.display = 'block';
+            
+            // Reset border color
+            fileUpload.style.borderColor = 'var(--border-color)';
+        }
+        
+        // Hide progress container
+        const progressContainer = document.getElementById('wipe-progress');
+        if (progressContainer) {
+            progressContainer.style.display = 'none';
+            
+            // Clear any completion messages
+            const completionMessages = progressContainer.querySelectorAll('.completion-message');
+            completionMessages.forEach(msg => msg.remove());
+        }
+        
+        // Reset progress values
+        const progressFill = document.getElementById('progress-fill');
+        const progressText = document.getElementById('progress-text');
+        if (progressFill) progressFill.style.width = '0%';
+        if (progressText) progressText.textContent = '0%';
     }
 
     async startBackup() {
