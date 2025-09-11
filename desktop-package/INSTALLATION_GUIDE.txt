@@ -1,0 +1,51 @@
+🖥️ WipeSure Desktop Application - Complete Installation Guide
+================================================================
+
+⚠️ IMPORTANT: This desktop application WILL delete original files from your computer!
+
+📋 REQUIREMENTS:
+- Windows, Mac, or Linux computer
+- Node.js installed (download from nodejs.org)
+- Internet connection to communicate with WipeSure server
+
+🔧 INSTALLATION STEPS:
+
+1. DOWNLOAD FILES:
+   - Copy the entire 'desktop-package' folder to your computer
+   - Or download all files to a new folder on your desktop
+
+2. INSTALL DEPENDENCIES:
+   - Open Terminal (Mac/Linux) or Command Prompt (Windows)
+   - Navigate to the desktop-package folder:
+     cd path/to/desktop-package
+   - Install required packages:
+     npm install
+
+3. RUN THE APPLICATION:
+   npm start
+
+🚀 USAGE:
+1. The desktop app window will open
+2. Click to select any file from your computer
+3. Choose wipe method (DoD 5220.22-M recommended)
+4. Click "Start Secure Wipe & Generate Certificate"
+5. ⚠️ CONFIRM deletion warning
+6. Watch progress as file is processed
+7. Certificate downloads to your Downloads folder
+8. 🗑️ ORIGINAL FILE IS PERMANENTLY DELETED
+
+🔒 SECURITY FEATURES:
+- Multi-pass secure overwrite before deletion
+- Tamper-proof certificate generation
+- SHA-256 hash verification
+- Enterprise-grade compliance standards
+
+⚠️ WARNING: 
+Files deleted by this application CANNOT be recovered!
+Use only on files you genuinely want to permanently destroy.
+
+📞 SUPPORT:
+If you encounter issues, ensure:
+- Node.js is properly installed
+- Internet connection is active
+- WipeSure server is running and accessible
