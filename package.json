@@ -1,9 +1,11 @@
 {
   "name": "workspace",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "desktop-app/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "electron": "electron desktop-app/main.js",
+    "start-desktop": "electron desktop-app/main.js"
   },
   "keywords": [],
   "author": "",
@@ -14,7 +16,9 @@
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
+    "electron": "^38.1.0",
     "express": "^5.1.0",
+    "form-data": "^4.0.4",
     "fs-extra": "^11.3.1",
     "multer": "^2.0.2",
     "nodemailer": "^7.0.6",
