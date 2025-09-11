@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WipeSure Enterprise Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Navigation Sidebar -->
+        <nav class="sidebar">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <h2>WipeSure</h2>
+                <span class="tagline">Proof, Not Promises</span>
+            </div>
+            
+            <ul class="nav-menu">
+                <li><a href="#dashboard" class="nav-link active" data-page="dashboard">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a></li>
+                <li><a href="#data-wipe" class="nav-link" data-page="data-wipe">
+                    <i class="fas fa-eraser"></i> Data Wipe
+                </a></li>
+                <li><a href="#data-backup" class="nav-link" data-page="data-backup">
+                    <i class="fas fa-cloud-upload-alt"></i> Data Backup
+                </a></li>
+                <li><a href="#data-transfer" class="nav-link" data-page="data-transfer">
+                    <i class="fas fa-exchange-alt"></i> Data Transfer
+                </a></li>
+                <li><a href="#ai-scan" class="nav-link" data-page="ai-scan">
+                    <i class="fas fa-brain"></i> AI Residue Scan
+                </a></li>
+                <li><a href="#certificates" class="nav-link" data-page="certificates">
+                    <i class="fas fa-certificate"></i> Certificates
+                </a></li>
+                <li><a href="#compliance" class="nav-link" data-page="compliance">
+                    <i class="fas fa-shield-check"></i> Security & Compliance
+                </a></li>
+                <li><a href="#multi-device" class="nav-link" data-page="multi-device">
+                    <i class="fas fa-laptop"></i> Multi-Device Management
+                </a></li>
+                <li><a href="#settings" class="nav-link" data-page="settings">
+                    <i class="fas fa-cog"></i> Settings
+                </a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <h1 id="page-title">Dashboard</h1>
+                    <div class="breadcrumb">
+                        <span>WipeSure Enterprise</span> > <span id="current-page">Dashboard</span>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="status-indicator">
+                        <div class="status-dot active"></div>
+                        <span>System Online</span>
+                    </div>
+                    <div class="user-info">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Security Admin</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <div class="page-content">
+                <!-- Dashboard Page -->
+                <div id="dashboard" class="page active">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-laptop"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="total-devices">0</h3>
+                                <p>Total Devices</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-eraser"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="total-wipes">0</h3>
+                                <p>Wipes Completed</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-certificate"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="total-certificates">0</h3>
+                                <p>Certificates Issued</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-sync-alt"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="active-wipes">0</h3>
+                                <p>Active Wipes</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-content">
+                        <div class="recent-activity">
+                            <h3>Recent Wipe Jobs</h3>
+                            <div id="recent-jobs" class="job-list"></div>
+                        </div>
+                        <div class="device-status">
+                            <h3>Device Status</h3>
+                            <div id="device-list" class="device-grid"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Wipe Page -->
+                <div id="data-wipe" class="page">
+                    <div class="wipe-container">
+                        <div class="wipe-controls">
+                            <h3>Select Wipe Type</h3>
+                            <div class="wipe-type-selector">
+                                <label class="radio-option">
+                                    <input type="radio" name="wipeType" value="file" checked>
+                                    <span class="radio-custom"></span>
+                                    File Wipe
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="wipeType" value="device">
+                                    <span class="radio-custom"></span>
+                                    Full Device Wipe
+                                </label>
+                            </div>
+
+                            <div class="file-upload-area" id="file-upload">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Drop files here or click to select</p>
+                                <input type="file" id="file-input" multiple>
+                            </div>
+
+                            <div class="device-selector" id="device-selector" style="display: none;">
+                                <label>Select Device:</label>
+                                <select id="device-select"></select>
+                            </div>
+
+                            <div class="wipe-settings">
+                                <label>Wipe Method:</label>
+                                <select id="wipe-method">
+                                    <option value="DoD 5220.22-M">DoD 5220.22-M (3 passes)</option>
+                                    <option value="NIST SP 800-88">NIST SP 800-88 (1 pass)</option>
+                                    <option value="Gutmann">Gutmann Method (35 passes)</option>
+                                    <option value="Random">Random Overwrite</option>
+                                </select>
+
+                                <label>Number of Passes:</label>
+                                <input type="number" id="wipe-passes" value="3" min="1" max="35">
+                            </div>
+
+                            <button id="start-wipe" class="btn-primary">
+                                <i class="fas fa-play"></i> Start Wipe
+                            </button>
+                        </div>
+
+                        <div class="wipe-progress" id="wipe-progress" style="display: none;">
+                            <h3>Wipe Progress</h3>
+                            <div class="progress-container">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="progress-fill"></div>
+                                </div>
+                                <span class="progress-text" id="progress-text">0%</span>
+                            </div>
+                            <div class="wipe-details">
+                                <p><strong>Method:</strong> <span id="current-method"></span></p>
+                                <p><strong>Pass:</strong> <span id="current-pass">1</span> of <span id="total-passes">3</span></p>
+                                <p><strong>Status:</strong> <span id="wipe-status">In Progress</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Backup Page -->
+                <div id="data-backup" class="page">
+                    <div class="backup-container">
+                        <h3>Data Backup</h3>
+                        <div class="backup-form">
+                            <label>Email Address:</label>
+                            <input type="email" id="backup-email" placeholder="admin@company.com">
+                            
+                            <label>Select Device:</label>
+                            <select id="backup-device-select"></select>
+                            
+                            <label>Backup Type:</label>
+                            <select id="backup-type">
+                                <option value="full">Full Backup</option>
+                                <option value="incremental">Incremental Backup</option>
+                                <option value="documents">Documents Only</option>
+                            </select>
+                            
+                            <button id="start-backup" class="btn-primary">
+                                <i class="fas fa-cloud-upload-alt"></i> Start Backup
+                            </button>
+                        </div>
+                        
+                        <div id="backup-status" class="status-display" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <!-- Data Transfer Page -->
+                <div id="data-transfer" class="page">
+                    <div class="transfer-container">
+                        <h3>Data Transfer</h3>
+                        <div class="transfer-form">
+                            <div class="device-selection">
+                                <div class="source-device">
+                                    <label>Source Device:</label>
+                                    <select id="source-device-select"></select>
+                                </div>
+                                <div class="transfer-arrow">
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
+                                <div class="target-device">
+                                    <label>Target Device:</label>
+                                    <select id="target-device-select"></select>
+                                </div>
+                            </div>
+                            
+                            <div class="file-types">
+                                <h4>Select File Types to Transfer:</h4>
+                                <div class="checkbox-group">
+                                    <label><input type="checkbox" value="documents" checked> Documents</label>
+                                    <label><input type="checkbox" value="images" checked> Images</label>
+                                    <label><input type="checkbox" value="videos"> Videos</label>
+                                    <label><input type="checkbox" value="applications"> Applications</label>
+                                </div>
+                            </div>
+                            
+                            <button id="start-transfer" class="btn-primary">
+                                <i class="fas fa-exchange-alt"></i> Start Transfer
+                            </button>
+                        </div>
+                        
+                        <div id="transfer-status" class="status-display" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <!-- AI Residue Scan Page -->
+                <div id="ai-scan" class="page">
+                    <div class="ai-scan-container">
+                        <h3>AI Residue Analysis</h3>
+                        <div class="scan-controls">
+                            <label>Select Device for Analysis:</label>
+                            <select id="ai-device-select"></select>
+                            <button id="start-ai-scan" class="btn-primary">
+                                <i class="fas fa-brain"></i> Start AI Scan
+                            </button>
+                        </div>
+                        
+                        <div class="radar-container" id="radar-container" style="display: none;">
+                            <div class="radar-display">
+                                <canvas id="radar-canvas" width="400" height="400"></canvas>
+                                <div class="radar-overlay">
+                                    <div class="scan-line"></div>
+                                </div>
+                            </div>
+                            <div class="scan-results">
+                                <h4>Analysis Results</h4>
+                                <div class="result-item">
+                                    <span>Entropy Score:</span>
+                                    <span id="entropy-score">--</span>
+                                </div>
+                                <div class="result-item">
+                                    <span>Recoverable Files:</span>
+                                    <span id="recoverable-files">--</span>
+                                </div>
+                                <div class="result-item">
+                                    <span>Residue Status:</span>
+                                    <span id="residue-status">--</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Certificates Page -->
+                <div id="certificates" class="page">
+                    <div class="certificates-container">
+                        <h3>Tamper-Proof Certificates</h3>
+                        <div class="certificates-controls">
+                            <button id="refresh-certificates" class="btn-secondary">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                        </div>
+                        <div id="certificates-list" class="certificates-grid"></div>
+                    </div>
+                </div>
+
+                <!-- Security & Compliance Page -->
+                <div id="compliance" class="page">
+                    <div class="compliance-container">
+                        <h3>Security & Compliance</h3>
+                        <div class="compliance-content">
+                            <div class="compliance-section">
+                                <h4><i class="fas fa-shield-check"></i> NIST SP 800-88 Compliance</h4>
+                                <p>Follows NIST SP 800-88 guidelines for media sanitization and data destruction.</p>
+                                <div class="compliance-features">
+                                    <div class="feature-item">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Multi-pass overwrite algorithms</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Cryptographic verification</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Audit trail generation</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="compliance-section">
+                                <h4><i class="fas fa-brain"></i> AI-Powered Analysis</h4>
+                                <p>AI scan analyzes storage to detect leftover recoverable data, ensuring complete wipe.</p>
+                                <div class="compliance-features">
+                                    <div class="feature-item">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Entropy analysis</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Pattern recognition</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Residue detection</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="compliance-section">
+                                <h4><i class="fas fa-certificate"></i> Certification & Documentation</h4>
+                                <p>Generates a certificate with device health details (SSD life, RAM) to support resale and recycling.</p>
+                                <div class="compliance-features">
+                                    <div class="feature-item">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Tamper-proof certificates</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Blockchain-style verification</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Device health reporting</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tagline-section">
+                                <h2>WipeSure — Proof, Not Promises</h2>
+                                <p>Enterprise-grade data security with verifiable results</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Multi-Device Management Page -->
+                <div id="multi-device" class="page">
+                    <div class="multi-device-container">
+                        <h3>Multi-Device Management</h3>
+                        <div class="device-grid-view" id="multi-device-grid"></div>
+                        <div class="batch-controls">
+                            <button id="batch-wipe" class="btn-primary">
+                                <i class="fas fa-play-circle"></i> Start Batch Wipe
+                            </button>
+                            <button id="select-all-devices" class="btn-secondary">
+                                <i class="fas fa-check-square"></i> Select All
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Page -->
+                <div id="settings" class="page">
+                    <div class="settings-container">
+                        <h3>Settings</h3>
+                        <div class="settings-section">
+                            <h4>Default Wipe Method</h4>
+                            <select id="default-wipe-method">
+                                <option value="DoD 5220.22-M">DoD 5220.22-M (3 passes)</option>
+                                <option value="NIST SP 800-88">NIST SP 800-88 (1 pass)</option>
+                                <option value="Gutmann">Gutmann Method (35 passes)</option>
+                            </select>
+                        </div>
+                        <div class="settings-section">
+                            <h4>AI Analysis</h4>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="ai-toggle" checked>
+                                <span class="toggle-slider"></span>
+                                Enable AI Residue Scanning
+                            </label>
+                        </div>
+                        <div class="settings-section">
+                            <h4>Cloud API Configuration</h4>
+                            <input type="password" id="cloud-api-key" placeholder="Enter Cloud API Key">
+                            <button id="save-settings" class="btn-primary">Save Settings</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
