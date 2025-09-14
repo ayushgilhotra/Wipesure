@@ -272,52 +272,26 @@ class WipeSureApp {
         }
     }
 
+    // 🔒 Modified here
     async startWipeJob() {
         const wipeType = document.querySelector('input[name="wipeType"]:checked').value;
-        const method = document.getElementById('wipe-method').value;
-        const passes = document.getElementById('wipe-passes').value;
-        
-        let formData = new FormData();
-        formData.append('method', method);
-        formData.append('passes', passes);
-        formData.append('wipeType', wipeType);
 
         if (wipeType === 'file') {
             const fileInput = document.getElementById('file-input');
-            if (!fileInput) {
-                alert('File input not found. Please refresh the page and try again.');
+            if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+                alert('Please select a file first.');
                 return;
             }
-            if (!fileInput.files || fileInput.files.length === 0) {
-                alert('Please select a file to wipe.');
-                return;
-            }
-            formData.append('file', fileInput.files[0]);
-            formData.append('deviceId', 'file-wipe');
         } else {
             const deviceId = document.getElementById('device-select').value;
             if (!deviceId) {
-                alert('Please select a device to wipe.');
+                alert('Please select a device first.');
                 return;
             }
-            formData.append('deviceId', deviceId);
         }
 
-        try {
-            const response = await fetch('/api/wipe', {
-                method: 'POST',
-                body: formData
-            });
-
-            const result = await response.json();
-            this.currentWipeJob = result.jobId;
-            this.wipeCompleted = false; // Reset completion flag for new job
-            this.showWipeProgress();
-            this.monitorWipeProgress();
-        } catch (error) {
-            console.error('Error starting wipe job:', error);
-            alert('Failed to start wipe job. Please try again.');
-        }
+        // Instead of starting a wipe, show security popup
+        alert("⚠️ For security reasons, file deletion must be done using the Desktop App.\n\nPlease download and use the Desktop App to securely delete files and generate certificates.");
     }
 
     showWipeProgress() {

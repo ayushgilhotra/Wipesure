@@ -3,6 +3,8 @@ const path = require('path');
 const fs = require('fs');
 const FormData = require('form-data');
 const axios = require('axios');
+const os = require('os');
+const crypto = require('crypto');
 
 let mainWindow;
 
@@ -19,8 +21,8 @@ function createWindow() {
     icon: path.join(__dirname, 'assets', 'icon.png')
   });
 
-  mainWindow.loadFile('desktop-app/index.html');
-  
+  mainWindow.loadFile('index.html');
+
   // Remove menu bar for cleaner look
   mainWindow.setMenuBarVisibility(false);
 }
@@ -39,7 +41,9 @@ app.on('activate', () => {
   }
 });
 
-// File selection handler
+// ==========================
+// File selection
+// ==========================
 ipcMain.handle('select-file', async () => {
   const result = await dialog.showOpenDialog(mainWindow, {
     properties: ['openFile'],
@@ -49,7 +53,7 @@ ipcMain.handle('select-file', async () => {
       { name: 'Images', extensions: ['jpg', 'jpeg', 'png', 'gif'] }
     ]
   });
-  
+
   if (!result.canceled && result.filePaths.length > 0) {
     return {
       filePath: result.filePaths[0],
@@ -60,75 +64,80 @@ ipcMain.handle('select-file', async () => {
   return null;
 });
 
-// Secure wipe handler
+// ==========================
+// Start wipe
+// ==========================
 ipcMain.handle('start-wipe', async (event, fileInfo, wipeOptions) => {
   try {
     const { filePath, fileName } = fileInfo;
     const { method, passes } = wipeOptions;
-    
-    // Create form data for upload
+
+    if (!fs.existsSync(filePath)) {
+      throw new Error(`File not found: ${filePath}`);
+    }
+
     const formData = new FormData();
     formData.append('file', fs.createReadStream(filePath));
     formData.append('method', method);
     formData.append('passes', passes);
     formData.append('wipeType', 'file');
     formData.append('deviceId', 'desktop-app');
-    
-    // Send to backend server
+
     const response = await axios.post('http://localhost:5000/api/wipe', formData, {
-      headers: formData.getHeaders()
+      headers: formData.getHeaders(),
+      timeout: 10000 // 10s timeout to avoid hanging
     });
-    
+
     return response.data;
   } catch (error) {
-    console.error('Wipe error:', error);
-    throw error;
+    console.error('❌ Wipe error:', error.message || error);
+    return { success: false, message: error.message || 'Unknown wipe error' };
   }
 });
 
+// ==========================
 // Progress monitoring
+// ==========================
 ipcMain.handle('get-wipe-progress', async (event, jobId) => {
   try {
     const response = await axios.get(`http://localhost:5000/api/wipe/${jobId}`);
     return response.data;
   } catch (error) {
-    console.error('Progress error:', error);
-    throw error;
+    console.error('❌ Progress error:', error.message || error);
+    return { success: false, message: error.message || 'Progress check failed' };
   }
 });
 
-// Certificate generation and local file deletion
+// ==========================
+// Certificate generation & deletion
+// ==========================
 ipcMain.handle('generate-certificate-and-delete', async (event, jobId, originalFilePath) => {
   try {
-    // Generate certificate
     const response = await axios.post(`http://localhost:5000/api/certificate/${jobId}`);
     const certificateData = response.data;
-    
-    // Download certificate
-    const certResponse = await axios.get(`http://localhost:5000${certificateData.downloadUrl}`, {
-      responseType: 'stream'
-    });
-    
-    // Save certificate to Downloads folder
-    const downloadsPath = path.join(require('os').homedir(), 'Downloads');
+
+    const certResponse = await axios.get(
+      `http://localhost:5000${certificateData.downloadUrl}`,
+      { responseType: 'stream' }
+    );
+
+    const downloadsPath = path.join(os.homedir(), 'Downloads');
     const certFileName = `WipeSure-Certificate-${Date.now()}.pdf`;
     const certPath = path.join(downloadsPath, certFileName);
-    
+
     const writer = fs.createWriteStream(certPath);
     certResponse.data.pipe(writer);
-    
+
     await new Promise((resolve, reject) => {
       writer.on('finish', resolve);
       writer.on('error', reject);
     });
-    
-    // **DELETE THE ORIGINAL FILE** - This is the key feature!
+
     if (fs.existsSync(originalFilePath)) {
-      // Secure deletion with multiple overwrites
       await secureDeleteLocalFile(originalFilePath);
-      console.log(`Original file deleted: ${originalFilePath}`);
+      console.log(`✅ Original file securely deleted: ${originalFilePath}`);
     }
-    
+
     return {
       success: true,
       certificatePath: certPath,
@@ -137,54 +146,50 @@ ipcMain.handle('generate-certificate-and-delete', async (event, jobId, originalF
       hash: certificateData.hash
     };
   } catch (error) {
-    console.error('Certificate generation error:', error);
-    throw error;
+    console.error('❌ Certificate error:', error.message || error);
+    return { success: false, message: error.message || 'Certificate generation failed' };
   }
 });
 
-// Secure local file deletion function
+// ==========================
+// Secure local deletion
+// ==========================
 async function secureDeleteLocalFile(filePath) {
   try {
     const stats = fs.statSync(filePath);
     const fileSize = stats.size;
-    
-    // Perform multiple overwrite passes
     const fd = fs.openSync(filePath, 'r+');
-    
+
     try {
-      // Pass 1: All zeros
+      // Pass 1: zeros
       const zeros = Buffer.alloc(Math.min(fileSize, 1024 * 1024), 0x00);
       for (let offset = 0; offset < fileSize; offset += zeros.length) {
-        const writeSize = Math.min(zeros.length, fileSize - offset);
-        fs.writeSync(fd, zeros, 0, writeSize, offset);
+        fs.writeSync(fd, zeros, 0, Math.min(zeros.length, fileSize - offset), offset);
       }
       fs.fsyncSync(fd);
-      
-      // Pass 2: All ones
+
+      // Pass 2: ones
       const ones = Buffer.alloc(Math.min(fileSize, 1024 * 1024), 0xFF);
       for (let offset = 0; offset < fileSize; offset += ones.length) {
-        const writeSize = Math.min(ones.length, fileSize - offset);
-        fs.writeSync(fd, ones, 0, writeSize, offset);
+        fs.writeSync(fd, ones, 0, Math.min(ones.length, fileSize - offset), offset);
       }
       fs.fsyncSync(fd);
-      
-      // Pass 3: Random data
+
+      // Pass 3: random
       for (let offset = 0; offset < fileSize; offset += 1024 * 1024) {
         const writeSize = Math.min(1024 * 1024, fileSize - offset);
-        const randomData = require('crypto').randomBytes(writeSize);
+        const randomData = crypto.randomBytes(writeSize);
         fs.writeSync(fd, randomData, 0, writeSize, offset);
       }
       fs.fsyncSync(fd);
-      
+
     } finally {
       fs.closeSync(fd);
     }
-    
-    // Finally delete the file
+
     fs.unlinkSync(filePath);
-    
   } catch (error) {
-    console.error('Secure deletion error:', error);
+    console.error('❌ Secure deletion error:', error.message || error);
     throw error;
   }
 }

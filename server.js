@@ -643,6 +643,9 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
 });
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`WipeSure Enterprise Dashboard server running on port ${PORT}`);
+const port = 5000;
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Server running at http://localhost:${port}`);
+}).on('error', (err) => {
+  console.error("Failed to start server:", err);
 });
